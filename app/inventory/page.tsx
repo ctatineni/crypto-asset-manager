@@ -31,6 +31,8 @@ import {
   ChevronLeft,
   ChevronRight,
   HardDrive,
+  Clock,
+  Key,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -64,14 +66,35 @@ export default function Inventory() {
     riskLevel: "all",
   })
 
+  const [certificateFilters, setCertificateFilters] = useState({
+    issuer: "all",
+    subject: "all",
+    validity: "all",
+  })
+
+  const [keyFilters, setKeyFilters] = useState({
+    algorithm: "all",
+    length: "all",
+    usage: "all",
+  })
+
   // Pretend we're loading paginated data
   useEffect(() => {
     // Simulate API call with filtering and pagination
     const filteredHosts = hosts.filter((host) => {
       const matchesSearch =
+        searchQuery === "" ||
         host.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         host.ip.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        host.os.toLowerCase().includes(searchQuery.toLowerCase())
+        host.os.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        // Include additional metadata searches for certificates and keys
+        `${host.certificates}`.includes(searchQuery) ||
+        `${host.keys}`.includes(searchQuery) ||
+        // Search in apps
+        host.apps.some((appId) => {
+          const app = apps.find((a) => a.id === appId)
+          return app && app.name.toLowerCase().includes(searchQuery.toLowerCase())
+        })
 
       const matchesApp = filters.app === "all" ? true : host.apps.includes(filters.app)
       const matchesType = filters.type === "all" ? true : host.type === filters.type
@@ -95,7 +118,7 @@ export default function Inventory() {
     // Reset selection when filters change
     setSelectedHosts([])
     setIsAllSelected(false)
-  }, [searchQuery, filters, currentPage])
+  }, [searchQuery, filters, currentPage, apps])
 
   // Host metrics for charts
   const hostTypeData = [
@@ -137,6 +160,10 @@ export default function Inventory() {
   }
 
   const totalPages = Math.ceil(hosts.length / HOSTS_PER_PAGE)
+
+  const toggleViewMode = () => {
+    setViewMode(viewMode === "list" ? "visual" : "list")
+  }
 
   return (
     <div className="container max-w-7xl mx-auto">
@@ -381,6 +408,7 @@ export default function Inventory() {
                   variant={viewMode === "list" ? "default" : "outline"}
                   size="icon"
                   onClick={() => setViewMode("list")}
+                  aria-label="List View"
                 >
                   <ListFilter className="h-4 w-4" />
                 </Button>
@@ -388,6 +416,7 @@ export default function Inventory() {
                   variant={viewMode === "visual" ? "default" : "outline"}
                   size="icon"
                   onClick={() => setViewMode("visual")}
+                  aria-label="Visual View"
                 >
                   <BarChart4 className="h-4 w-4" />
                 </Button>
@@ -701,6 +730,96 @@ export default function Inventory() {
             </TabsContent>
 
             <TabsContent value="certificates">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex gap-1">
+                      <Shield className="h-4 w-4" />
+                      Issuer
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Filter by Issuer</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem
+                      checked={certificateFilters.issuer === "all"}
+                      onCheckedChange={() => setCertificateFilters({ ...certificateFilters, issuer: "all" })}
+                    >
+                      All Issuers
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={certificateFilters.issuer === "digicert"}
+                      onCheckedChange={() => setCertificateFilters({ ...certificateFilters, issuer: "digicert" })}
+                    >
+                      DigiCert
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={certificateFilters.issuer === "letsencrypt"}
+                      onCheckedChange={() => setCertificateFilters({ ...certificateFilters, issuer: "letsencrypt" })}
+                    >
+                      Let's Encrypt
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex gap-1">
+                      <Clock className="h-4 w-4" />
+                      Validity
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Filter by Validity</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem
+                      checked={certificateFilters.validity === "all"}
+                      onCheckedChange={() => setCertificateFilters({ ...certificateFilters, validity: "all" })}
+                    >
+                      All Certificates
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={certificateFilters.validity === "valid"}
+                      onCheckedChange={() => setCertificateFilters({ ...certificateFilters, validity: "valid" })}
+                    >
+                      Valid
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={certificateFilters.validity === "expiring"}
+                      onCheckedChange={() => setCertificateFilters({ ...certificateFilters, validity: "expiring" })}
+                    >
+                      Expiring Soon
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={certificateFilters.validity === "expired"}
+                      onCheckedChange={() => setCertificateFilters({ ...certificateFilters, validity: "expired" })}
+                    >
+                      Expired
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <div className="flex gap-2 ml-auto">
+                  <Button
+                    variant={viewMode === "list" ? "default" : "outline"}
+                    size="icon"
+                    onClick={() => setViewMode("list")}
+                    aria-label="List View"
+                  >
+                    <ListFilter className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === "visual" ? "default" : "outline"}
+                    size="icon"
+                    onClick={() => setViewMode("visual")}
+                    aria-label="Visual View"
+                  >
+                    <BarChart4 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -812,6 +931,102 @@ export default function Inventory() {
             </TabsContent>
 
             <TabsContent value="keys">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex gap-1">
+                      <Database className="h-4 w-4" />
+                      Algorithm
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Filter by Algorithm</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.algorithm === "all"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, algorithm: "all" })}
+                    >
+                      All Algorithms
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.algorithm === "rsa"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, algorithm: "rsa" })}
+                    >
+                      RSA
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.algorithm === "ecc"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, algorithm: "ecc" })}
+                    >
+                      ECC
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.algorithm === "dsa"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, algorithm: "dsa" })}
+                    >
+                      DSA
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex gap-1">
+                      <Key className="h-4 w-4" />
+                      Key Length
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Filter by Key Length</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.length === "all"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, length: "all" })}
+                    >
+                      All Key Lengths
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.length === "1024"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, length: "1024" })}
+                    >
+                      1024-bit
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.length === "2048"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, length: "2048" })}
+                    >
+                      2048-bit
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={keyFilters.length === "4096"}
+                      onCheckedChange={() => setKeyFilters({ ...keyFilters, length: "4096" })}
+                    >
+                      4096-bit
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <div className="flex gap-2 ml-auto">
+                  <Button
+                    variant={viewMode === "list" ? "default" : "outline"}
+                    size="icon"
+                    onClick={() => setViewMode("list")}
+                    aria-label="List View"
+                  >
+                    <ListFilter className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === "visual" ? "default" : "outline"}
+                    size="icon"
+                    onClick={() => setViewMode("visual")}
+                    aria-label="Visual View"
+                  >
+                    <BarChart4 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>

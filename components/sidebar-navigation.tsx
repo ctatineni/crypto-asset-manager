@@ -16,6 +16,8 @@ import {
   Settings,
   Shield,
   Wrench,
+  Package,
+  Network,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -72,6 +74,14 @@ export function SidebarNavigation({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith("/knowledge-graph")}>
+                <Link href="/knowledge-graph">
+                  <Network className="mr-2 h-4 w-4" />
+                  Knowledge Graph
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname.startsWith("/vulnerabilities")}>
                 <Link href="/vulnerabilities">
                   <AlertTriangle className="mr-2 h-4 w-4" />
@@ -103,6 +113,14 @@ export function SidebarNavigation({ children }: { children: React.ReactNode }) {
                 <Link href="/ai-assistant">
                   <MessageSquareWarning className="mr-2 h-4 w-4" />
                   AI Assistant
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith("/cryptography-materials")}>
+                <Link href="/cryptography-materials">
+                  <Package className="mr-2 h-4 w-4" />
+                  Crypto Materials
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

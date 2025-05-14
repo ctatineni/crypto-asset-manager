@@ -1,83 +1,42 @@
-import { Bell, HelpCircle, Search, Settings, User } from "lucide-react"
+"use client"
+
+import { MoonIcon, SunIcon } from "lucide-react"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export function Header() {
+  const { setTheme } = useTheme()
+
   return (
-    <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-10">
-      <div className="flex items-center justify-between h-16 px-6">
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-            CryptoGuard<span className="text-blue-600">AI</span>
-          </h1>
+    <header className="sticky top-0 z-10 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+      <div className="flex h-16 items-center px-4 md:px-6">
+        <div className="flex-1 flex items-center space-x-4">
+          <div className="w-full max-w-sm">
+            <Input type="search" placeholder="Search..." className="bg-slate-100 dark:bg-slate-800 border-none" />
+          </div>
         </div>
-
-        <div className="relative w-1/3">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-500" />
-          <Input
-            type="search"
-            placeholder="Search cryptographic assets, vulnerabilities..."
-            className="w-full pl-8 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
+        <div className="flex items-center space-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-red-500">
-                  3
-                </Badge>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64">
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-medium">Certificate Expiring</span>
-                  <span className="text-xs text-slate-500">App-123 has 2 certificates expiring in 7 days</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-medium">Critical Vulnerability</span>
-                  <span className="text-xs text-slate-500">New OpenSSL vulnerability detected in App-456</span>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <div className="flex flex-col">
-                  <span className="font-medium">Weak Encryption</span>
-                  <span className="text-xs text-slate-500">MD5 hashing detected in App-789</span>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button variant="ghost" size="icon">
-            <HelpCircle className="h-5 w-5" />
-          </Button>
-
-          <Button variant="ghost" size="icon">
-            <Settings className="h-5 w-5" />
-          </Button>
-
-          <ThemeToggle />
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
+              <Button variant="outline" size="icon">
+                <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Avatar>
+            <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
+            <AvatarFallback>U</AvatarFallback>
+          </Avatar>
         </div>
       </div>
     </header>

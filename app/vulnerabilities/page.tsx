@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { AlertTriangle, CheckCircle2, Clock, Code, FileText, Server, Wrench } from "lucide-react"
-import { ChartContainer, Chart, ChartBars, ChartBar, ChartTooltip } from "@/components/ui/chart"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts"
 
 export default function Vulnerabilities() {
   const [selectedApp, setSelectedApp] = useState<string>("all")
@@ -129,43 +129,75 @@ export default function Vulnerabilities() {
               <div>
                 <h3 className="text-sm font-medium mb-4">By Severity</h3>
                 <div className="h-60">
-                  <ChartContainer height={250} data={chartData}>
-                    <Chart>
-                      <ChartBars>
-                        {chartData.map((d) => (
-                          <ChartBar
-                            key={d.name}
-                            value={d.value}
-                            style={{
-                              fill: d.color,
-                            }}
-                          />
-                        ))}
-                      </ChartBars>
-                      <ChartTooltip />
-                    </Chart>
-                  </ChartContainer>
+                  <BarChart
+                    width={500}
+                    height={250}
+                    data={chartData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                    <XAxis dataKey="name" className="text-xs text-slate-500 dark:text-slate-400" />
+                    <YAxis className="text-xs text-slate-500 dark:text-slate-400" />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="rounded-lg border bg-background p-2 shadow-sm">
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="flex flex-col">
+                                  <span className="text-[0.70rem] uppercase text-muted-foreground">{label}</span>
+                                  <span className="font-bold text-muted-foreground">{payload[0].value}</span>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        }
+                        return null
+                      }}
+                    />
+                    <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]}>
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
                 </div>
               </div>
               <div>
                 <h3 className="text-sm font-medium mb-4">By Status</h3>
                 <div className="h-60">
-                  <ChartContainer height={250} data={statusChartData}>
-                    <Chart>
-                      <ChartBars>
-                        {statusChartData.map((d) => (
-                          <ChartBar
-                            key={d.name}
-                            value={d.value}
-                            style={{
-                              fill: d.color,
-                            }}
-                          />
-                        ))}
-                      </ChartBars>
-                      <ChartTooltip />
-                    </Chart>
-                  </ChartContainer>
+                  <BarChart
+                    width={500}
+                    height={250}
+                    data={statusChartData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                    <XAxis dataKey="name" className="text-xs text-slate-500 dark:text-slate-400" />
+                    <YAxis className="text-xs text-slate-500 dark:text-slate-400" />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="rounded-lg border bg-background p-2 shadow-sm">
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="flex flex-col">
+                                  <span className="text-[0.70rem] uppercase text-muted-foreground">{label}</span>
+                                  <span className="font-bold text-muted-foreground">{payload[0].value}</span>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        }
+                        return null
+                      }}
+                    />
+                    <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]}>
+                      {statusChartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
                 </div>
               </div>
             </div>
