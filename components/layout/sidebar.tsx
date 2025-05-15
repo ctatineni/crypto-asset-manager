@@ -17,6 +17,8 @@ import {
   MessagesSquare,
   Brain,
   Network,
+  Building,
+  Code,
 } from "lucide-react"
 
 export function Sidebar() {
@@ -29,6 +31,7 @@ export function Sidebar() {
   const navigation = [
     { name: "Overview", href: "/", icon: Home },
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Lines of Business", href: "/lob", icon: Building },
     {
       name: "Cryptographic Assets",
       icon: Shield,
@@ -36,16 +39,17 @@ export function Sidebar() {
         { name: "Inventory", href: "/inventory", icon: List },
         { name: "Certificates", href: "/certificates", icon: FileText },
         { name: "Keys", href: "/keys", icon: Key },
+        { name: "Libraries", href: "/libraries", icon: Library },
       ],
     },
     { name: "Knowledge Graph", href: "/knowledge-graph", icon: Network },
     { name: "Vulnerabilities", href: "/vulnerabilities", icon: AlertTriangle },
-    { name: "Libraries", href: "/libraries", icon: Library },
-    { name: "Hosts", href: "/hosts", icon: Server },
+    { name: "Code Anti-Patterns", href: "/anti-patterns", icon: Code },
+    { name: "Hosts & Sources", href: "/hosts", icon: Server },
     { name: "Remediation", href: "/remediation", icon: Wrench },
     { name: "Reports", href: "/reports", icon: BarChart },
     { name: "AI Assistant", href: "/ai-assistant", icon: MessagesSquare },
-    { name: "Recommendations", href: "/recommendations", icon: Brain },
+    { name: "AI Query", href: "/ai-query", icon: Brain },
   ]
 
   return (
@@ -54,7 +58,7 @@ export function Sidebar() {
         <Shield className="h-6 w-6 text-blue-400 mr-2" />
         <h1 className="text-xl font-bold">CryptoGuard</h1>
       </div>
-      <nav className="p-4 space-y-1">
+      <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-64px)]">
         {navigation.map((item) =>
           !item.children ? (
             <Link

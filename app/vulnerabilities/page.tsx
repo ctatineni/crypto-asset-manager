@@ -241,7 +241,9 @@ export default function Vulnerabilities() {
                 </p>
               </div>
 
-              <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700">View Full AI Analysis</Button>
+              <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700" asChild>
+                <Link href="/ai-assistant">View Full AI Analysis</Link>
+              </Button>
             </div>
           </CardContent>
         </Card>

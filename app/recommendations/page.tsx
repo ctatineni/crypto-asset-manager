@@ -601,9 +601,11 @@ export default function RecommendationsPage() {
                 </div>
 
                 <DialogFooter className="gap-2 sm:gap-0">
-                  <Button variant="ghost">
-                    <Terminal className="mr-1 h-4 w-4" />
-                    Generate Script
+                  <Button variant="ghost" asChild>
+                    <Link href="/ai-assistant">
+                      <Terminal className="mr-1 h-4 w-4" />
+                      Generate Script
+                    </Link>
                   </Button>
 
                   {selectedRecommendation.status === "open" ? (
@@ -623,7 +625,9 @@ export default function RecommendationsPage() {
                       Mark as Complete
                     </Button>
                   ) : (
-                    <Button>View Progress</Button>
+                    <Button asChild>
+                      <Link href="/remediation">View Progress</Link>
+                    </Button>
                   )}
                 </DialogFooter>
               </DialogContent>

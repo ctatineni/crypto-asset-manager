@@ -134,17 +134,23 @@ export default function Reports() {
             </CardDescription>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Printer className="h-4 w-4 mr-1" />
-              Print
+            <Button asChild variant="outline" size="sm">
+              <Link href="#">
+                <Printer className="h-4 w-4 mr-1" />
+                Print
+              </Link>
             </Button>
-            <Button variant="outline" size="sm">
-              <Share2 className="h-4 w-4 mr-1" />
-              Share
+            <Button asChild variant="outline" size="sm">
+              <Link href="#">
+                <Share2 className="h-4 w-4 mr-1" />
+                Share
+              </Link>
             </Button>
-            <Button size="sm">
-              <Download className="h-4 w-4 mr-1" />
-              Download
+            <Button asChild size="sm">
+              <Link href="#">
+                <Download className="h-4 w-4 mr-1" />
+                Download
+              </Link>
             </Button>
           </div>
         </CardHeader>

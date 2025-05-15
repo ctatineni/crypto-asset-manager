@@ -23,6 +23,7 @@ import {
   CheckCircle,
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts"
+import { LOBSelector } from "@/components/lob-selector"
 
 export default function Dashboard() {
   const searchParams = useSearchParams()
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const [vulnerabilities, setVulnerabilities] = useState(getAppVulnerabilities(appId))
   const [hosts, setHosts] = useState(getAppHosts(appId))
   const [libraries, setLibraries] = useState(getAppLibraries(appId))
+  const [selectedLOB, setSelectedLOB] = useState<string | null>(null)
 
   useEffect(() => {
     setApp(getApp(appId))
@@ -106,19 +108,22 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{app.name}</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">{app.description}</p>
         </div>
-        <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link href="/vulnerabilities">
-              <AlertTriangle className="mr-1 h-4 w-4" />
-              View Vulnerabilities
-            </Link>
-          </Button>
-          <Button asChild>
-            <Link href="/remediation">
-              <Wrench className="mr-1 h-4 w-4" />
-              Remediation
-            </Link>
-          </Button>
+        <div className="flex items-center gap-4">
+          <LOBSelector onSelect={setSelectedLOB} selectedLOB={selectedLOB} />
+          <div className="flex gap-2">
+            <Button asChild variant="outline">
+              <Link href="/vulnerabilities">
+                <AlertTriangle className="mr-1 h-4 w-4" />
+                View Vulnerabilities
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link href="/remediation">
+                <Wrench className="mr-1 h-4 w-4" />
+                Remediation
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -331,7 +336,9 @@ export default function Dashboard() {
                   </p>
                 </div>
 
-                <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700">View Detailed AI Analysis</Button>
+                <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700" asChild>
+                  <Link href="/ai-assistant">View Detailed AI Analysis</Link>
+                </Button>
               </div>
             </CardContent>
           </Card>

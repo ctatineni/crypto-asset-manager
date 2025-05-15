@@ -26,7 +26,7 @@ import {
 export default function InventoryDetail({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [viewMode, setViewMode] = useState<"list" | "visual">("list")
-  
+
   const app = getApp(params.id)
   const vulnerabilities = getAppVulnerabilities(params.id)
   const libraries = getAppLibraries(params.id)
@@ -75,10 +75,10 @@ export default function InventoryDetail({ params }: { params: { id: string } }) 
             app.risk_score > 80
               ? "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300"
               : app.risk_score > 60
-              ? "bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300"
-              : app.risk_score > 40
-              ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300"
-              : "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300"
+                ? "bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300"
+                : app.risk_score > 40
+                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300"
+                  : "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300"
           }
         >
           Risk Score: {app.risk_score}
@@ -186,12 +186,22 @@ export default function InventoryDetail({ params }: { params: { id: string } }) 
             <TabsTrigger value="keys">Keys</TabsTrigger>
             <TabsTrigger value="hosts">Hosts</TabsTrigger>
           </TabsList>
-          
+
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setViewMode("list")} className={viewMode === "list" ? "bg-slate-100 dark:bg-slate-800" : ""}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setViewMode("list")}
+              className={viewMode === "list" ? "bg-slate-100 dark:bg-slate-800" : ""}
+            >
               List View
             </Button>
-            <Button variant="outline" size="sm" onClick={() => setViewMode("visual")} className={viewMode === "visual" ? "bg-slate-100 dark:bg-slate-800" : ""}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setViewMode("visual")}
+              className={viewMode === "visual" ? "bg-slate-100 dark:bg-slate-800" : ""}
+            >
               Visual View
             </Button>
           </div>
@@ -246,8 +256,8 @@ export default function InventoryDetail({ params }: { params: { id: string } }) 
                           vuln.severity === "critical"
                             ? "bg-red-50 dark:bg-red-900/20"
                             : vuln.severity === "high"
-                            ? "bg-amber-50 dark:bg-amber-900/20"
-                            : "bg-yellow-50 dark:bg-yellow-900/20"
+                              ? "bg-amber-50 dark:bg-amber-900/20"
+                              : "bg-yellow-50 dark:bg-yellow-900/20"
                         }`}
                       >
                         <div
@@ -255,8 +265,8 @@ export default function InventoryDetail({ params }: { params: { id: string } }) 
                             vuln.severity === "critical"
                               ? "text-red-800 dark:text-red-300"
                               : vuln.severity === "high"
-                              ? "text-amber-800 dark:text-amber-300"
-                              : "text-yellow-800 dark:text-yellow-300"
+                                ? "text-amber-800 dark:text-amber-300"
+                                : "text-yellow-800 dark:text-yellow-300"
                           }`}
                         >
                           {vuln.name}
@@ -266,8 +276,8 @@ export default function InventoryDetail({ params }: { params: { id: string } }) 
                             vuln.severity === "critical"
                               ? "text-red-600 dark:text-red-400"
                               : vuln.severity === "high"
-                              ? "text-amber-600 dark:text-amber-400"
-                              : "text-yellow-600 dark:text-yellow-400"
+                                ? "text-amber-600 dark:text-amber-400"
+                                : "text-yellow-600 dark:text-yellow-400"
                           }`}
                         >
                           {vuln.description.substring(0, 60)}...
@@ -491,4 +501,91 @@ export default function InventoryDetail({ params }: { params: { id: string } }) 
                       <TableCell>RSA-OAEP</TableCell>
                       <TableCell>2048-bit</TableCell>
                       <TableCell>2023-03-15</TableCell>
-                      <Table\
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-md h-[400px] flex items-center justify-center">
+                  <div className="text-center">
+                    <Key className="h-16 w-16 mx-auto text-slate-300 dark:text-slate-700 mb-4" />
+                    <h3 className="text-lg font-medium mb-2">Key Visualization</h3>
+                    <p className="text-sm text-slate-500 max-w-md mx-auto">
+                      In a real implementation, this would show a visual representation of the keys and their
+                      relationships to hosts and applications.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="hosts">
+          <Card>
+            <CardHeader>
+              <CardTitle>Hosts</CardTitle>
+              <CardDescription>Servers and infrastructure hosting this application</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {viewMode === "list" ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>IP Address</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {/* Mock host data */}
+                    <TableRow>
+                      <TableCell className="font-medium">web-server-01</TableCell>
+                      <TableCell>192.168.1.100</TableCell>
+                      <TableCell>New York</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-green-100 text-green-800">
+                          Online
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">db-server-01</TableCell>
+                      <TableCell>192.168.1.101</TableCell>
+                      <TableCell>New York</TableCell>
+                      <TableCell>
+                        <Badge variant="destructive">Offline</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-md h-[400px] flex items-center justify-center">
+                  <div className="text-center">
+                    <Server className="h-16 w-16 mx-auto text-slate-300 dark:text-slate-700 mb-4" />
+                    <h3 className="text-lg font-medium mb-2">Host Visualization</h3>
+                    <p className="text-sm text-slate-500 max-w-md mx-auto">
+                      In a real implementation, this would show a visual representation of the hosts and their
+                      relationships to applications and certificates.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
